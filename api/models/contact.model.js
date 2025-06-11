@@ -1,35 +1,28 @@
 import mongoose from "mongoose";
 
-const postSchema = mongoose.Schema(
+const contactSchema = mongoose.Schema(
     {
-        title: {
+        name: {
             type: String,
             required: true,
         },
-        desc: {
+        email: {
             type: String,
             required: true,
         },
-        image: {
+        message: {
             type: String,
             required: true,
         },
-        video:{
+        reason:{
             type: String,
             required: true
-        },
-        tech:[
-            {
-                type: String,
-                required: true,
-            }
-        ]
+        }
     },
     {
         timestamps: true,
     }
 );
 
-const Post = mongoose.model("Post", postSchema);
-
-export default Post;
+const Touch = mongoose.model("Contact", contactSchema);
+export default Touch;

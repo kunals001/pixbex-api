@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import ImageKit from "imagekit";
 import jwt from "jsonwebtoken";
+import Touch from "../models/contact.model.js";
 
 
 export const Login = async (req, res) => {
@@ -59,6 +60,17 @@ export const Login = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const Contact = async(req, res) => {
+    try {
+        const {name,email,message,reason} = req.body;
+        const contact = await Touch.create({name,email,message,reason});
+        res.status(200).json({success: true, message: "Message sent successfully",contact });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({success: false, message: error.message });
+    }
+}
 
 export const CheckAuth = async(req, res) => {
     try {
