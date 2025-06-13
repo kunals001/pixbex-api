@@ -3,7 +3,6 @@ import Post from "../models/post.model.js";
 
 export const createPost = async (req, res) => {
   try {
-    console.log("Received Data:", req.body);
     const { title, desc, cate, video, tech } = req.body;
 
     if (!title || !desc || !cate || !video || !tech) {
@@ -12,7 +11,6 @@ export const createPost = async (req, res) => {
     }
 
     const post = await Post.create({ title, desc, cate, video, tech });
-    console.log("Post Created:", post);
     return res.status(201).json({ success: true, post });
   } catch (error) {
     console.error("Create Post Error:", error);
@@ -37,5 +35,35 @@ export const updatePost = async(req,res) =>{
     } catch (error) {
         console.log("Error in updatePost ", error);
         return res.status(500).json({ success: false, message: "Server error in updatePost" });
+    }
+}
+
+export const getAllPosts = async(req,res) => {
+    try {
+      const user = await User.findById(req.user.id).select("-password");
+
+        if(!user.isAdmin){
+            return res.status(400).json({success: false, message: "User not found" });
+        }
+        const posts = await Post.find();
+        res.status(200).json({success: true, message: "Posts fetched successfully",posts });
+    } catch (error) {
+        console.log("Error in getAllPosts ", error);
+        return res.status(500).json({ success: false, message: "Server error in getAllPosts" });
+    }
+}
+
+export const getPosts = async(req,res) => {
+    try {
+      const user = await User.findById(req.user.id).select("-password");
+
+        if(!user.isAdmin){
+            return res.status(400).json({success: false, message: "User not found" });
+        }
+        const post = await Post.findById(req.params.postId);
+        res.status(200).json({success: true, message: "Post fetched successfully",post });
+    } catch (error) {
+        console.log("Error in getPosts ", error);
+        return res.status(500).json({ success: false, message: "Server error in getPosts" });
     }
 }
