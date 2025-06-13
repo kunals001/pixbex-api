@@ -10,7 +10,7 @@ const postSchema = mongoose.Schema(
             type: String,
             required: true,
         },
-        image: {
+        cate: {
             type: String,
             required: true,
         },
@@ -18,12 +18,10 @@ const postSchema = mongoose.Schema(
             type: String,
             required: true
         },
-        tech:[
-            {
-                type: String,
-                required: true,
-            }
-        ]
+        tech:{
+            type: String,
+            required: true
+        }
     },
     {
         timestamps: true,

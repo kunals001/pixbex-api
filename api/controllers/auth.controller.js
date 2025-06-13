@@ -72,6 +72,36 @@ export const Contact = async(req, res) => {
     }
 }
 
+export const GetContact = async(req, res) => {
+    try {
+      const user = await User.findById(req.user.id).select("-password");
+
+        if(!user.isAdmin){
+            return res.status(400).json({success: false, message: "User not found" });
+        }
+        const contact = await Touch.find();
+        res.status(200).json({success: true, message: "Message sent successfully",contact });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({success: false, message: error.message });
+    }
+}
+
+export const DeleteContact = async(req, res) => {
+    try {
+      const user = await User.findById(req.user.id).select("-password");
+
+        if(!user.isAdmin){
+            return res.status(400).json({success: false, message: "User not found" });
+        }
+        const contact = await Touch.findByIdAndDelete(req.params.id);
+        res.status(200).json({success: true, message: "Message deleted successfully",contact });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({success: false, message: error.message });
+    }
+}
+
 export const CheckAuth = async(req, res) => {
     try {
         const user = await User.findById(req.user.id).select("-password");
