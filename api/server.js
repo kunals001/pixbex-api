@@ -20,9 +20,11 @@ import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/auth.route.js";
 import postRoutes from "./routes/post.route.js"
+import hireRoutes from "./routes/hire.route.js"
 
 app.use("/api/auth", authRoutes);
-app.use("/api/post" , postRoutes)
+app.use("/api/post" , postRoutes);
+app.use("/api/hire" , hireRoutes);
 
 
 app.listen(PORT, () => {
