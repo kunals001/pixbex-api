@@ -40,11 +40,6 @@ export const updatePost = async(req,res) =>{
 
 export const getAllPosts = async(req,res) => {
     try {
-      const user = await User.findById(req.user.id).select("-password");
-
-        if(!user.isAdmin){
-            return res.status(400).json({success: false, message: "User not found" });
-        }
         const posts = await Post.find();
         res.status(200).json({success: true, message: "Posts fetched successfully",posts });
     } catch (error) {

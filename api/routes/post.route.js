@@ -6,7 +6,7 @@ import {createPost,updatePost,getAllPosts,getPosts} from "../controllers/post.co
 
 router.post("/create-post",protectRoute,createPost)
 router.put("/update-post/:postId",protectRoute,updatePost)
-router.get("/get-all-post",protectRoute,getAllPosts)
+router.get("/get-all-post",getAllPosts)
 router.get("/get-post/:postId",protectRoute,getPosts)
 
 export default router
