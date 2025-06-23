@@ -21,7 +21,11 @@ const postSchema = mongoose.Schema(
         tech:{
             type: String,
             required: true
-        }
+        },
+        skills: [{
+            type:String,
+            required: true
+        }]
     },
     {
         timestamps: true,

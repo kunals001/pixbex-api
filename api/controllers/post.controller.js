@@ -3,14 +3,14 @@ import Post from "../models/post.model.js";
 
 export const createPost = async (req, res) => {
   try {
-    const { title, desc, cate, video, tech } = req.body;
+    const { title, desc, cate, video, tech,skills} = req.body;
 
-    if (!title || !desc || !cate || !video || !tech) {
+    if (!title || !desc || !cate || !video || !tech || !skills) {
       console.log("Missing Fields");
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
-    const post = await Post.create({ title, desc, cate, video, tech });
+    const post = await Post.create({ title, desc, cate, video, tech ,skills});
     return res.status(201).json({ success: true, post });
   } catch (error) {
     console.error("Create Post Error:", error);
