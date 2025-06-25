@@ -43,7 +43,7 @@ export const Login = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true only in production
+      secure: process.env.NODE_ENV !== "development", // true only in production
       sameSite: "lax", // lax is safer for production
       maxAge: 10 * 24 * 60 * 60 * 1000,
     });
@@ -55,6 +55,7 @@ export const Login = async (req, res) => {
       success: true,
       message: "User logged in successfully",
       user: userData,
+      token,
     });
 
   } catch (error) {
