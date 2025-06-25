@@ -1,3 +1,4 @@
+import "dotenv/config";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import ImageKit from "imagekit";
@@ -9,46 +10,47 @@ export const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if email and password are provided
+    // Validate input
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Please enter email and password" });
+      return res.status(400).json({
+        success: false,
+        message: "Please enter email and password",
+      });
     }
 
-    // Find user and include password field
+    // Find user and include password
     const user = await User.findOne({ email }).select("+password");
-
     if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User not found" });
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    // Compare password
+    // Match password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid credentials" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid credentials",
+      });
     }
 
-    // Generate JWT token
+    // Generate token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "10d",
     });
 
-    // Set cookie
+    // Set token as cookie
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
       sameSite: "strict",
-      maxAge: 10 * 24 * 60 * 60 * 1000, // 10 days
+      maxAge: 10 * 24 * 60 * 60 * 1000,
     });
 
-    // Return user data excluding password
+    // Send response without password
     const { password: _, ...userData } = user._doc;
-
     res.status(200).json({
       success: true,
       message: "User logged in successfully",
@@ -57,7 +59,26 @@ export const Login = async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const Logout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
