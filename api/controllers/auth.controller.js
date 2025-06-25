@@ -10,30 +10,18 @@ export const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validate input
     if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: "Please enter email and password",
-      });
+      return res.status(400).json({ message: "Please enter email and password" });
     }
 
-    // Find user and include password
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ email }).select("+password");
     if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "User not found",
-      });
+      return res.status(400).json({ message: "User not found" });
     }
 
-    // Match password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid credentials",
-      });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
     generateToken(res, user._id);
@@ -41,16 +29,13 @@ export const Login = async (req, res) => {
     const { password: _, ...userData } = user._doc;
     res.status(200).json({
       success: true,
-      message: "User logged in successfully",
+      message: "Logged in successfully",
       user: userData,
     });
 
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
 
