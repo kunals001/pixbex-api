@@ -41,13 +41,13 @@ export const Login = async (req, res) => {
       expiresIn: "10d",
     });
 
-    // Set token as cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV !== "development",
-      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production", // true only in production
+      sameSite: "lax", // lax is safer for production
       maxAge: 10 * 24 * 60 * 60 * 1000,
     });
+
 
     // Send response without password
     const { password: _, ...userData } = user._doc;
