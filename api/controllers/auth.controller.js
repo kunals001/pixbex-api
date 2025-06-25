@@ -2,8 +2,8 @@ import "dotenv/config";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import ImageKit from "imagekit";
-import jwt from "jsonwebtoken";
 import Touch from "../models/contact.model.js";
+import {generateToken} from "../utils/generateToken.js"
 
 
 export const Login = async (req, res) => {
@@ -19,7 +19,7 @@ export const Login = async (req, res) => {
     }
 
     // Find user and include password
-    const user = await User.findOne({ email }).select("+password");
+    const user = await User.findOne({ email })
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -36,26 +36,13 @@ export const Login = async (req, res) => {
       });
     }
 
-    // Generate token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "10d",
-    });
+    generateToken(res, user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV !== "development", // true only in production
-      sameSite: "lax", // lax is safer for production
-      maxAge: 10 * 24 * 60 * 60 * 1000,
-    });
-
-
-    // Send response without password
     const { password: _, ...userData } = user._doc;
     res.status(200).json({
       success: true,
       message: "User logged in successfully",
       user: userData,
-      token,
     });
 
   } catch (error) {
@@ -67,21 +54,15 @@ export const Login = async (req, res) => {
   }
 };
 
-export const Logout = async (req, res) => {
-  try {
-    res.clearCookie("token");
-    res.status(200).json({
-      success: true,
-      message: "User logged out successfully",
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+export const Logout = async (req,res) => {
+    try {
+        res.clearCookie("token");
+        res.status(200).json({success:true,message:"User signed out"})
+    } catch (error) {
+        console.log("error in signout",error.message);
+        res.status(500).json({success:false,message:"Internal Server Error in signout"})
+    }
+}
 
 export const Contact = async(req, res) => {
     try {
